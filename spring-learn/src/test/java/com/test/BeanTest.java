@@ -17,8 +17,12 @@ public class BeanTest {
 		 * 			构造函数会调用到上述父类的构造函数
 		 * */
 		BeanFactory beanFactory = new XmlBeanFactory(new ClassPathResource("com.test/beans.xml"));
-		TestBean testBean = (TestBean) beanFactory.getBean("testBean");
-		Assert.assertEquals(testBean.getStr(), "hello world");
+		TestBean testBean1 = (TestBean) beanFactory.getBean("testBean");
+		Assert.assertEquals(testBean1.getStr(), "hello world");
+		System.out.println(testBean1);
+
+		TestBean testBean2 = (TestBean) beanFactory.getBean("testBean");
+		System.out.println(testBean2);
 	}
 
 	@Test
@@ -27,6 +31,17 @@ public class BeanTest {
 		//System.setProperty("Spring.profiles.active", "dev");
 		TestBean testBean = (TestBean) beanFactory.getBean("testBean");
 		System.out.println(testBean.getStr());
+	}
+
+	@Test
+	public void test_factoryBean() throws Exception {
+		BeanFactory beanFactory = new XmlBeanFactory(new ClassPathResource("com.test/beans.xml"));
+		Car car1 = (Car) beanFactory.getBean("car");
+		System.out.println(car1);
+		CarFactoryBean carFactoryBean = (CarFactoryBean) beanFactory.getBean("&car");
+		Car car2 = carFactoryBean.getObject();
+		System.out.println(car2);
+		System.out.println(car1 == car2);
 	}
 
 }
