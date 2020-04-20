@@ -3,8 +3,16 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-	<beans>
-		<bean id="testBean" class="com.test.TestBean"/>
+	<beans profile="dev">
+		<bean id="testBean" class="com.test.TestBean">
+			<property name="str" value="dev"/>
+		</bean>
+	</beans>
+
+	<beans profile="test">
+		<bean id="testBean" class="com.test.TestBean">
+			<property name="str" value="test"/>
+		</bean>
 	</beans>
 
 </beans>
