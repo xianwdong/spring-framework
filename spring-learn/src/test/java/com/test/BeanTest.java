@@ -38,10 +38,11 @@ public class BeanTest {
 		BeanFactory beanFactory = new XmlBeanFactory(new ClassPathResource("com.test/beans.xml"));
 		Car car1 = (Car) beanFactory.getBean("car");
 		System.out.println(car1);
+
 		CarFactoryBean carFactoryBean = (CarFactoryBean) beanFactory.getBean("&car");
 		Car car2 = carFactoryBean.getObject();
 		System.out.println(car2);
-		System.out.println(car1 == car2);
+		// System.out.println(car1 == car2);
 	}
 
 }
