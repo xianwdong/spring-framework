@@ -502,6 +502,9 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 		try {
 			// Give BeanPostProcessors a chance to return a proxy instead of the target bean instance.
+			// 创建bean之前的前置处理，如果前置处理后的bean不为空，就直接返回了
+			// 前置处理里，调用了两个方法：applyBeanPostProcessorsBeforeInstantiation applyBeanPostProcessorsAfterInitialization
+			// 分别对bean创建进行前置和后置处理
 			Object bean = resolveBeforeInstantiation(beanName, mbdToUse);
 			if (bean != null) {
 				return bean;

@@ -174,7 +174,6 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	 */
 	@Nullable
 	protected Object getSingleton(String beanName, boolean allowEarlyReference) {
-		//
 		Object singletonObject = this.singletonObjects.get(beanName);
 		if (singletonObject == null && isSingletonCurrentlyInCreation(beanName)) {
 			synchronized (this.singletonObjects) {
@@ -204,6 +203,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 		Assert.notNull(beanName, "Bean name must not be null");
 		synchronized (this.singletonObjects) {
 			Object singletonObject = this.singletonObjects.get(beanName);
+			// 单例需要再检测一次
 			if (singletonObject == null) {
 				if (this.singletonsCurrentlyInDestruction) {
 					throw new BeanCreationNotAllowedException(beanName,
@@ -213,6 +213,10 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 				if (logger.isDebugEnabled()) {
 					logger.debug("Creating shared instance of singleton bean '" + beanName + "'");
 				}
+				/**
+				 * {@link DefaultSingletonBeanRegistry#singletonsCurrentlyInCreation}
+				 * 实例化bean之前，这里会记录bean正在创建的状态，即把beanName加入到singletonsCurrentlyInCreation集合中
+				 * */
 				beforeSingletonCreation(beanName);
 				boolean newSingleton = false;
 				boolean recordSuppressedExceptions = (this.suppressedExceptions == null);
@@ -220,6 +224,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 					this.suppressedExceptions = new LinkedHashSet<>();
 				}
 				try {
+					// 对于单例bean来说，这里就是调用了createBean方法
 					singletonObject = singletonFactory.getObject();
 					newSingleton = true;
 				}
@@ -243,9 +248,14 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 					if (recordSuppressedExceptions) {
 						this.suppressedExceptions = null;
 					}
+					/**
+					 * {@link DefaultSingletonBeanRegistry#singletonsCurrentlyInCreation}
+					 * 实例化bean之后，这里会清除bean正在创建的状态，即把beanName移出singletonsCurrentlyInCreation集合
+					 * */
 					afterSingletonCreation(beanName);
 				}
 				if (newSingleton) {
+					// 处理一些缓存的状态
 					addSingleton(beanName, singletonObject);
 				}
 			}

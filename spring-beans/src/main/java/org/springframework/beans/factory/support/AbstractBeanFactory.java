@@ -321,6 +321,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 				// 第一次执行getBean：BeanDefinition默认都是单例
 				// 正常bean的创建的后置处理器是在哪调用的
 				if (mbd.isSingleton()) {
+					// 第一次执行getBean：bean实例创建的方法
 					sharedInstance = getSingleton(beanName, () -> {
 						try {
 							return createBean(beanName, mbd, args);
