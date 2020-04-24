@@ -556,6 +556,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			instanceWrapper = this.factoryBeanInstanceCache.remove(beanName);
 		}
 		if (instanceWrapper == null) {
+			// 先创建一个bean的Wrapper
 			instanceWrapper = createBeanInstance(beanName, mbd, args);
 		}
 		final Object bean = instanceWrapper.getWrappedInstance();
@@ -580,6 +581,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 		// Eagerly cache singletons to be able to resolve circular references
 		// even when triggered by lifecycle interfaces like BeanFactoryAware.
+		// 单例 && 允许循环依赖 && bean正在创建中，则需要提前暴露bean
 		boolean earlySingletonExposure = (mbd.isSingleton() && this.allowCircularReferences &&
 				isSingletonCurrentlyInCreation(beanName));
 		if (earlySingletonExposure) {
@@ -587,13 +589,20 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 				logger.trace("Eagerly caching bean '" + beanName +
 						"' to allow for resolving potential circular references");
 			}
+//			this.singletonFactories.put(beanName, singletonFactory);
+//			this.earlySingletonObjects.remove(beanName);
+//			this.registeredSingletons.add(beanName);
+			// bean初始化完成之前将bean的ObjectFactory加入缓存
+			// getEarlyBeanReference方法会对bean增强，和AOP有关
 			addSingletonFactory(beanName, () -> getEarlyBeanReference(beanName, mbd, bean));
 		}
 
 		// Initialize the bean instance.
 		Object exposedObject = bean;
 		try {
+			// 对bean进行填充，将各个属性注入，其中可能存在依赖其他bean的属性，则会递归初始化bean
 			populateBean(beanName, mbd, instanceWrapper);
+			// 调用方法，比如init-method
 			exposedObject = initializeBean(beanName, exposedObject, mbd);
 		}
 		catch (Throwable ex) {
@@ -607,8 +616,10 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		}
 
 		if (earlySingletonExposure) {
+			// 只有检测到循环依赖，这里才不会为空，todo 写个test测一下：构造器注入会抛异常，set注入不会
 			Object earlySingletonReference = getSingleton(beanName, false);
 			if (earlySingletonReference != null) {
+				// 判断bean有没有被增强
 				if (exposedObject == bean) {
 					exposedObject = earlySingletonReference;
 				}

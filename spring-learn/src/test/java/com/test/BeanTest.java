@@ -1,9 +1,12 @@
 package com.test;
 
+import com.test.inject.School;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.core.io.ClassPathResource;
 
 public class BeanTest {
@@ -43,6 +46,19 @@ public class BeanTest {
 		Car car2 = carFactoryBean.getObject();
 		System.out.println(car2);
 		// System.out.println(car1 == car2);
+	}
+
+	@Test
+	public void test_school() {
+//		 https://stackoverflow.com/questions/33840912/autowire-annotation-giving-null-value-in-spring
+//		 https://blog.csdn.net/chenlong220192/article/details/46723561
+		BeanFactory beanFactory = new XmlBeanFactory(new ClassPathResource("com.test/beans-school.xml"));
+		School school1 = (School) beanFactory.getBean("school");
+		System.out.println(school1);
+
+		/*ApplicationContext context = new ClassPathXmlApplicationContext("com.test/beans-school.xml");
+		School school2 = (School) context.getBean("school");
+		System.out.println(school2);*/
 	}
 
 }
