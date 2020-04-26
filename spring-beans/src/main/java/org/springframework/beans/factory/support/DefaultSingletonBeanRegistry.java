@@ -256,6 +256,10 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 				}
 				if (newSingleton) {
 					// 处理一些缓存的状态
+//					this.singletonObjects.put(beanName, singletonObject);
+//					this.singletonFactories.remove(beanName);
+//					this.earlySingletonObjects.remove(beanName);
+//					this.registeredSingletons.add(beanName);
 					addSingleton(beanName, singletonObject);
 				}
 			}

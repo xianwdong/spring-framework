@@ -1,5 +1,6 @@
 package com.test.inject;
 
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
@@ -7,7 +8,7 @@ import java.util.List;
 /**
  * @create 2020-04-24
  */
-public class School {
+public class School implements InitializingBean {
 
 	private String name;
 
@@ -32,5 +33,10 @@ public class School {
 				", address=" + address +
 				", studentList=" + studentList +
 				'}';
+	}
+
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		System.out.println("afterPropertiesSet");
 	}
 }

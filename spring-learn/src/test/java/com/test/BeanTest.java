@@ -3,9 +3,11 @@ package com.test;
 import com.test.inject.School;
 import org.junit.Assert;
 import org.junit.Test;
+import org.springframework.beans.factory.BeanCurrentlyInCreationException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.core.io.ClassPathResource;
 
@@ -48,6 +50,17 @@ public class BeanTest {
 		// System.out.println(car1 == car2);
 	}
 
+	@Test(expected = BeanCurrentlyInCreationException.class)
+	public void test_cycle() throws Throwable {
+		try {
+			new ClassPathXmlApplicationContext("com.test/cyclebeans.xml");
+		} catch (Exception e) {
+			Throwable e1 = e.getCause().getCause().getCause();
+			e1.printStackTrace();
+			throw e1;
+		}
+	}
+
 	@Test
 	public void test_school() {
 //		 https://stackoverflow.com/questions/33840912/autowire-annotation-giving-null-value-in-spring
@@ -56,9 +69,9 @@ public class BeanTest {
 		School school1 = (School) beanFactory.getBean("school");
 		System.out.println(school1);
 
-		/*ApplicationContext context = new ClassPathXmlApplicationContext("com.test/beans-school.xml");
+		ApplicationContext context = new ClassPathXmlApplicationContext("com.test/beans-school.xml");
 		School school2 = (School) context.getBean("school");
-		System.out.println(school2);*/
+		System.out.println(school2);
 	}
 
 }
