@@ -8,8 +8,9 @@
 
 	<bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"/>
 
-	<bean id="school" class="com.test.inject.School" autowire="byType">
+	<bean id="school" class="com.test.inject.School" init-method="init">
 		<property name="name" value="spring高中"/>
+		<property name="schoolMaster" ref="schoolMaster"/>
  	</bean>
 
 	<bean id="address" class="com.test.inject.Address">
@@ -19,5 +20,11 @@
 	<bean id="seniorStudent" class="com.test.inject.SeniorStudent">
 		<property name="level" value="高级"/>
 	</bean>
+
+	<bean id="schoolMaster" class="com.test.inject.SchoolMaster">
+		<property name="school" ref="school"/>
+	</bean>
+
+	<alias name="school" alias="s"/>
 
 </beans>

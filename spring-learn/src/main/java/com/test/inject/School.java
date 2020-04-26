@@ -12,11 +12,21 @@ public class School implements InitializingBean {
 
 	private String name;
 
+	private SchoolMaster schoolMaster;
+
 	@Autowired
 	private Address address;
 
 	@Autowired
 	private List<Student> studentList;
+
+	public SchoolMaster getSchoolMaster() {
+		return schoolMaster;
+	}
+
+	public void setSchoolMaster(SchoolMaster schoolMaster) {
+		this.schoolMaster = schoolMaster;
+	}
 
 	public String getName() {
 		return name;
@@ -26,17 +36,22 @@ public class School implements InitializingBean {
 		this.name = name;
 	}
 
-	@Override
-	public String toString() {
-		return "School{" +
-				"name='" + name + '\'' +
-				", address=" + address +
-				", studentList=" + studentList +
-				'}';
+	public void init(){
+		System.out.println("init");
 	}
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		System.out.println("afterPropertiesSet");
+	}
+
+	@Override
+	public String toString() {
+		return "School{" +
+				"name='" + name + '\'' +
+				", schoolMaster=" + schoolMaster +
+				", address=" + address +
+				", studentList=" + studentList +
+				'}';
 	}
 }

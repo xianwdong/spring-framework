@@ -129,7 +129,7 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 		this.delegate = createDelegate(getReaderContext(), root, parent);
 
 		if (this.delegate.isDefaultNamespace(root)) {
-			// 处理profile属性
+			// 处理profile属性 不是所有的ApplicationContext都能激活profile，暂时可以不管
 			String profileSpec = root.getAttribute(PROFILE_ATTRIBUTE);
 			if (StringUtils.hasText(profileSpec)) {
 				String[] specifiedProfiles = StringUtils.tokenizeToStringArray(

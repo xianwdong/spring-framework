@@ -227,6 +227,7 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 	 * @see DefaultListableBeanFactory#setAllowEagerClassLoading
 	 */
 	protected void customizeBeanFactory(DefaultListableBeanFactory beanFactory) {
+		// todo 这两个值默认都是null
 		if (this.allowBeanDefinitionOverriding != null) {
 			beanFactory.setAllowBeanDefinitionOverriding(this.allowBeanDefinitionOverriding);
 		}

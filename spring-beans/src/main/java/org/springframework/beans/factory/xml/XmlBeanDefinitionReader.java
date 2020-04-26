@@ -336,6 +336,7 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 				if (encodedResource.getEncoding() != null) {
 					inputSource.setEncoding(encodedResource.getEncoding());
 				}
+				// 用SAX去解析resource的xml文件
 				return doLoadBeanDefinitions(inputSource, encodedResource.getResource());
 			}
 			finally {

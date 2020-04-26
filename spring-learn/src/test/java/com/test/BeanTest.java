@@ -22,21 +22,13 @@ public class BeanTest {
 		 * 		2.1 org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory#AbstractAutowireCapableBeanFactory()
 		 * 			构造函数会调用到上述父类的构造函数
 		 * */
-		BeanFactory beanFactory = new XmlBeanFactory(new ClassPathResource("com.test/beans.xml"));
+		XmlBeanFactory beanFactory = new XmlBeanFactory(new ClassPathResource("com.test/beans.xml"));
 		TestBean testBean1 = (TestBean) beanFactory.getBean("testBean");
 		Assert.assertEquals(testBean1.getStr(), "hello world");
 		System.out.println(testBean1);
 
 		TestBean testBean2 = (TestBean) beanFactory.getBean("testBean");
 		System.out.println(testBean2);
-	}
-
-	@Test
-	public void test_profile() {
-		BeanFactory beanFactory = new XmlBeanFactory(new ClassPathResource("com.test/beans-profile.xml"));
-		//System.setProperty("Spring.profiles.active", "dev");
-		TestBean testBean = (TestBean) beanFactory.getBean("testBean");
-		System.out.println(testBean.getStr());
 	}
 
 	@Test
@@ -71,8 +63,9 @@ public class BeanTest {
 //		System.out.println(school1);
 //
 		ApplicationContext context = new ClassPathXmlApplicationContext("com.test/beans-school.xml");
-		School school2 = (School) context.getBean("school");
-		System.out.println(school2);
+
+		School school3 = (School) context.getBean("s");
+		System.out.println(school3);
 
 		// ApplicationContext context = new MyClassPathXmlApplicationContext("com.test/beans-school.xml");
 	}
@@ -84,6 +77,5 @@ public class BeanTest {
 		context.publishEvent(event);
 
 	}
-
 
 }
