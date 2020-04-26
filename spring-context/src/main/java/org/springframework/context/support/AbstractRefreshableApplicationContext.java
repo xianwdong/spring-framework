@@ -128,7 +128,12 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 		}
 		try {
 			DefaultListableBeanFactory beanFactory = createBeanFactory();
+			// 可以通过id反序列化到BeanFactory对象
 			beanFactory.setSerializationId(getId());
+			// 定制beanFactory，设置相关属性，包括是否允许覆盖同名称的不同定义的对象以及循环依赖以及
+			// todo @Autowired和@Qualifier注解解析器SimpleAutowireCandidateResolver
+			// 3.1版本之前这个方法里设置了注解解析器为QualifierAnnotationAutowireCandidateResolver，但是3.1版本删除了那一行代码，为什么
+			// 这个Resolver在polulate方法中用到了
 			customizeBeanFactory(beanFactory);
 			loadBeanDefinitions(beanFactory);
 			synchronized (this.beanFactoryMonitor) {

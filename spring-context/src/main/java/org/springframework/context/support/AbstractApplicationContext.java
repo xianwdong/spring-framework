@@ -515,7 +515,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	public void refresh() throws BeansException, IllegalStateException {
 		synchronized (this.startupShutdownMonitor) {
 			// Prepare this context for refreshing.
-			// 准备刷新
+			// 准备刷新，对系统属性或者环境变量进行准备及验证 todo 怎么验证
 			prepareRefresh();
 
 			// Tell the subclass to refresh the internal bean factory.
@@ -524,6 +524,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 			// Prepare the bean factory for use in this context.
 			// 对BeanFactory进行各种功能填充
+			// 比如@Autowired注解和@Qualifier注解的支持
 			prepareBeanFactory(beanFactory);
 
 			try {
@@ -544,7 +545,8 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				initMessageSource();
 
 				// Initialize event multicaster for this context.
-				// 初始化应用消息广播器，并放入"applicationEventMulticaster"bean中
+				// 初始化应用消息多播器，并放入"applicationEventMulticaster"bean中
+				// 逻辑很简单，先获取"applicationEventMulticaster"的bean，没有就使用默认的
 				initApplicationEventMulticaster();
 
 				// Initialize other special beans in specific context subclasses.
@@ -608,10 +610,12 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		}
 
 		// Initialize any placeholder property sources in the context environment.
+		// 留给子类实现
 		initPropertySources();
 
 		// Validate that all properties marked as required are resolvable:
 		// see ConfigurablePropertyResolver#setRequiredProperties
+		// 验证系统变量，默认没有需要校验的环境变量，需要的话可以重写该类
 		getEnvironment().validateRequiredProperties();
 
 		// Store pre-refresh ApplicationListeners...
@@ -657,7 +661,9 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	protected void prepareBeanFactory(ConfigurableListableBeanFactory beanFactory) {
 		// Tell the internal bean factory to use the context's class loader etc.
 		beanFactory.setBeanClassLoader(getClassLoader());
+		// 表达式语言相关
 		beanFactory.setBeanExpressionResolver(new StandardBeanExpressionResolver(beanFactory.getBeanClassLoader()));
+		// 属性编辑器相关
 		beanFactory.addPropertyEditorRegistrar(new ResourceEditorRegistrar(this, getEnvironment()));
 
 		// Configure the bean factory with context callbacks.

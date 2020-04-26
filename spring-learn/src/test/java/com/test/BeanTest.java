@@ -1,5 +1,6 @@
 package com.test;
 
+import com.test.event.TestEvent;
 import com.test.inject.School;
 import org.junit.Assert;
 import org.junit.Test;
@@ -65,13 +66,24 @@ public class BeanTest {
 	public void test_school() {
 //		 https://stackoverflow.com/questions/33840912/autowire-annotation-giving-null-value-in-spring
 //		 https://blog.csdn.net/chenlong220192/article/details/46723561
-		BeanFactory beanFactory = new XmlBeanFactory(new ClassPathResource("com.test/beans-school.xml"));
-		School school1 = (School) beanFactory.getBean("school");
-		System.out.println(school1);
-
+//		BeanFactory beanFactory = new XmlBeanFactory(new ClassPathResource("com.test/beans-school.xml"));
+//		School school1 = (School) beanFactory.getBean("school");
+//		System.out.println(school1);
+//
 		ApplicationContext context = new ClassPathXmlApplicationContext("com.test/beans-school.xml");
 		School school2 = (School) context.getBean("school");
 		System.out.println(school2);
+
+		// ApplicationContext context = new MyClassPathXmlApplicationContext("com.test/beans-school.xml");
 	}
+
+	@Test
+	public void test_listener() {
+		ApplicationContext context = new ClassPathXmlApplicationContext("com.test/listener.xml");
+		TestEvent event = new TestEvent("hello", "world");
+		context.publishEvent(event);
+
+	}
+
 
 }
