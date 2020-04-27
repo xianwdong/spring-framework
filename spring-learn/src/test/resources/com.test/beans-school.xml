@@ -6,10 +6,15 @@
 
 	<!--<context:annotation-config/>-->
 
-	<bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"/>
+		<bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"/>
 
-	<bean id="school" class="com.test.inject.School" init-method="init">
-		<property name="name" value="spring高中"/>
+	<!-- org.springframework.beans.factory.support.BeanDefinitionReaderUtils.uniqueBeanName -->
+	<!-- 默认这种bean，会用class + # + counter -->
+	<bean class="com.test.TestBean"/>
+
+	<!-- 可以在bean中使用autowire="byType"，那么就不用注入schooleMaster属性了，会自动根据类型注入 -->
+	<bean id="school" class="com.test.inject.School" init-method="init" name="school1,school2,school3">
+		<constructor-arg index="0" value="spring高中"/>
 		<property name="schoolMaster" ref="schoolMaster"/>
  	</bean>
 
@@ -22,7 +27,7 @@
 	</bean>
 
 	<bean id="schoolMaster" class="com.test.inject.SchoolMaster">
-		<property name="school" ref="school"/>
+		<!--<property name="school" ref="school"/>-->
 	</bean>
 
 	<alias name="school" alias="s"/>

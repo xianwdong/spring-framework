@@ -316,10 +316,14 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 			// <bean id="test" class="test.MyClass">
 			// 		<mybean:user username="aaa">
 			// </bean>
-			// 这个mybean不属于自定义类型，而是属于bean的自定义属性
+			// 这个mybean不属于bean的自定义配置，而是属于bean的自定义属性
 			bdHolder = delegate.decorateBeanDefinitionIfRequired(ele, bdHolder);
 			try {
-				// 注册holder
+				// 注册BeanDefinition
+				// 这里的注册大概只做了以下几件事
+				// this.beanDefinitionMap.put(beanName, beanDefinition);
+				// this.beanDefinitionNames.add(beanName);
+				// this.aliasMap.put(alias, name);
 				BeanDefinitionReaderUtils.registerBeanDefinition(bdHolder, getReaderContext().getRegistry());
 			}
 			catch (BeanDefinitionStoreException ex) {

@@ -240,6 +240,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			@Nullable final Object[] args, boolean typeCheckOnly) throws BeansException {
 
 		// 提取对应bean的beanName
+		// 去掉beanName前面的&，然后从aliasMap中尝试获取原名
 		final String beanName = transformedBeanName(name);
 		Object bean;
 

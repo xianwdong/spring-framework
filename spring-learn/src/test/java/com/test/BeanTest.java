@@ -1,5 +1,6 @@
 package com.test;
 
+import com.test.element.lookup.GetBeanTest;
 import com.test.event.TestEvent;
 import com.test.inject.School;
 import org.junit.Assert;
@@ -55,19 +56,22 @@ public class BeanTest {
 	}
 
 	@Test
-	public void test_school() {
+	public void test_school_withBeanFacotory() {
 //		 https://stackoverflow.com/questions/33840912/autowire-annotation-giving-null-value-in-spring
 //		 https://blog.csdn.net/chenlong220192/article/details/46723561
-//		BeanFactory beanFactory = new XmlBeanFactory(new ClassPathResource("com.test/beans-school.xml"));
-//		School school1 = (School) beanFactory.getBean("school");
-//		System.out.println(school1);
-//
-		ApplicationContext context = new ClassPathXmlApplicationContext("com.test/beans-school.xml");
+		BeanFactory beanFactory = new XmlBeanFactory(new ClassPathResource("com.test/beans-school.xml"));
+		Object bean = beanFactory.getBean("org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor#0");
+		System.out.println(bean);
+		School school1 = (School) beanFactory.getBean("school");
+		System.out.println(school1);
 
+	}
+
+	@Test
+	public void test_school_withApplicationContext() {
+		ApplicationContext context = new ClassPathXmlApplicationContext("com.test/beans-school.xml");
 		School school3 = (School) context.getBean("s");
 		System.out.println(school3);
-
-		// ApplicationContext context = new MyClassPathXmlApplicationContext("com.test/beans-school.xml");
 	}
 
 	@Test
@@ -75,7 +79,13 @@ public class BeanTest {
 		ApplicationContext context = new ClassPathXmlApplicationContext("com.test/listener.xml");
 		TestEvent event = new TestEvent("hello", "world");
 		context.publishEvent(event);
+	}
 
+	@Test
+	public void test_lookup() {
+		ApplicationContext context = new ClassPathXmlApplicationContext("com.test/beans-lookup.xml");
+		GetBeanTest getBeanTest = (GetBeanTest) context.getBean("getBeanTest");
+		getBeanTest.showMe();
 	}
 
 }

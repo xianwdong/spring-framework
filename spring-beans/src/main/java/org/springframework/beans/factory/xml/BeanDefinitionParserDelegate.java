@@ -422,6 +422,10 @@ public class BeanDefinitionParserDelegate {
 			aliases.addAll(Arrays.asList(nameArr));
 		}
 
+		/**
+		 * beanName优先取id，然后取name配置的第一个，逗号或者分号分隔，其他的算作alias
+		 * 比如配置文件的配置，beanName就是school，alias分别是school1 school2 school3，逗号和分号都可以分隔
+		 * */
 		String beanName = id;
 		if (!StringUtils.hasText(beanName) && !aliases.isEmpty()) {
 			beanName = aliases.remove(0);
@@ -431,11 +435,12 @@ public class BeanDefinitionParserDelegate {
 			}
 		}
 
+		// 确保beanName和alias都没有使用过
 		if (containingBean == null) {
 			checkNameUniqueness(beanName, aliases, ele);
 		}
 
-		// 解析各种属性
+		// 解析各种属性 返回的是GenericBeanDefinition对象
 		AbstractBeanDefinition beanDefinition = parseBeanDefinitionElement(ele, beanName, containingBean);
 		if (beanDefinition != null) {
 			if (!StringUtils.hasText(beanName)) {
@@ -516,15 +521,25 @@ public class BeanDefinitionParserDelegate {
 		try {
 			// 1.创建用于属性承载的BeanDefinition
 			AbstractBeanDefinition bd = createBeanDefinition(className, parent);
-			// 2.解析各种属性
+			// 2.解析各种属性，比如singleton，init-method等等
 			parseBeanDefinitionAttributes(ele, beanName, containingBean, bd);
 			bd.setDescription(DomUtils.getChildElementValueByTagName(ele, DESCRIPTION_ELEMENT));
-			// 3.解析子元素meta
+			// 3.解析子元素meta，如下面的这种配置，不会出现在最后的bean中，只会在bd里有
+			// 通过getAttribute(key)获取
+			/**
+			 * <bean id = xxx>
+			 *     <meta key="key" value="value"/>
+			 * </bean>
+			 * */
 			parseMetaElements(ele, bd);
+			// com.test.BeanTest#test_lookup()
+			// lookup和replaceMethod都是记录在org.springframework.beans.factory.support.AbstractBeanDefinition.methodOverrides中
 			parseLookupOverrideSubElements(ele, bd.getMethodOverrides());
 			parseReplacedMethodSubElements(ele, bd.getMethodOverrides());
-
+			// 解析构造函数，都放在constructorArgumentValues参数中
+			// 如何分辨value和ref，好像是value是纯字符串，ref在字符串两边加了<>
 			parseConstructorArgElements(ele, bd);
+			// 提取property的配置，放在propertyValues参数中
 			parsePropertyElements(ele, bd);
 			parseQualifierElements(ele, bd);
 

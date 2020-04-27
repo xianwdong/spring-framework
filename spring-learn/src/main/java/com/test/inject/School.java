@@ -20,6 +20,12 @@ public class School implements InitializingBean {
 	@Autowired
 	private List<Student> studentList;
 
+	public School() {}
+
+	public School(String name) {
+		this.name = name;
+	}
+
 	public SchoolMaster getSchoolMaster() {
 		return schoolMaster;
 	}
@@ -28,13 +34,14 @@ public class School implements InitializingBean {
 		this.schoolMaster = schoolMaster;
 	}
 
-	public String getName() {
+	// todo name可以不用有set方法，也能注入
+	/*public String getName() {
 		return name;
 	}
 
 	public void setName(String name) {
 		this.name = name;
-	}
+	}*/
 
 	public void init(){
 		System.out.println("init");
