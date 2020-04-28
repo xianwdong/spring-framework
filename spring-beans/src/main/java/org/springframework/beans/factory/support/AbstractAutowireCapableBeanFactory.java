@@ -493,6 +493,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 		// Prepare method overrides.
 		try {
+			// 准备要覆盖的方法，包括lookup replaceMethod
 			mbdToUse.prepareMethodOverrides();
 		}
 		catch (BeanDefinitionValidationException ex) {
@@ -505,6 +506,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			// 创建bean之前的前置处理，如果前置处理后的bean不为空，就直接返回了
 			// 前置处理里，调用了两个方法：applyBeanPostProcessorsBeforeInstantiation applyBeanPostProcessorsAfterInitialization
 			// 分别对bean创建进行前置和后置处理
+			// todo 对于BeanFactory好像是不会走到走到这里的，BeanFactory无法激活BeanPostProcessor的使用
 			Object bean = resolveBeforeInstantiation(beanName, mbdToUse);
 			if (bean != null) {
 				return bean;
@@ -556,9 +558,10 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			instanceWrapper = this.factoryBeanInstanceCache.remove(beanName);
 		}
 		if (instanceWrapper == null) {
-			// 先创建一个bean的Wrapper
+			// 先创建一个bean的Wrapper,对于school这个bean来说，会调用它的构造函数，所以这里创建出来的wrapper中的bean只有name的属性
 			instanceWrapper = createBeanInstance(beanName, mbd, args);
 		}
+		// School{s='null', name='spring高中', schoolMaster=null, address=null, studentList=null}
 		final Object bean = instanceWrapper.getWrappedInstance();
 		Class<?> beanType = instanceWrapper.getWrappedClass();
 		if (beanType != NullBean.class) {
@@ -569,7 +572,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		synchronized (mbd.postProcessingLock) {
 			if (!mbd.postProcessed) {
 				try {
-					// 这里后置处理，解析bean的@Autowire属性
+					// 这里后置处理，解析bean的@Autowire属性，同理，这里对于BeanFactory没什么用
 					applyMergedBeanDefinitionPostProcessors(mbd, beanType, beanName);
 				}
 				catch (Throwable ex) {
@@ -595,6 +598,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 //			this.registeredSingletons.add(beanName);
 			// bean初始化完成之前将bean的ObjectFactory加入缓存
 			// getEarlyBeanReference方法会对bean增强，和AOP有关
+			// 注意的第二个参数返回的就是instanceWrapper包装的bean
 			addSingletonFactory(beanName, () -> getEarlyBeanReference(beanName, mbd, bean));
 		}
 
@@ -617,7 +621,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		}
 
 		if (earlySingletonExposure) {
-			// 只有检测到循环依赖，这里才不会为空，todo 写个test测一下：构造器注入会抛异常，set注入不会
+			// 只有检测到循环依赖，这里才不会为空
 			Object earlySingletonReference = getSingleton(beanName, false);
 			if (earlySingletonReference != null) {
 				// 判断bean有没有被增强
@@ -1171,6 +1175,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			return obtainFromSupplier(instanceSupplier, beanName);
 		}
 
+		// 工厂方法不为空则使用工厂方法初始化
 		if (mbd.getFactoryMethodName() != null) {
 			return instantiateUsingFactoryMethod(beanName, mbd, args);
 		}
@@ -1389,9 +1394,11 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 				}
 			}
 		}
-
+		// 对于school这个bean，这里会解析出的pvs会有两个值s和schoolMaster
+		// 其实就是BeanDefinition的propertyValues值，这个值会保存xml中的property属性
 		PropertyValues pvs = (mbd.hasPropertyValues() ? mbd.getPropertyValues() : null);
 
+		// 如果在bean中配置了autowire，那么会执行到这里，会自动注入Bean没有在xml的property属性中配置的属性，这里也会存在递归调用getBean的情况
 		int resolvedAutowireMode = mbd.getResolvedAutowireMode();
 		if (resolvedAutowireMode == AUTOWIRE_BY_NAME || resolvedAutowireMode == AUTOWIRE_BY_TYPE) {
 			MutablePropertyValues newPvs = new MutablePropertyValues(pvs);
@@ -1439,6 +1446,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		}
 
 		if (pvs != null) {
+			// 这里会对s和schoolMaster进行属性解析
 			applyPropertyValues(beanName, mbd, bw, pvs);
 		}
 	}
@@ -1687,6 +1695,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			else {
 				String propertyName = pv.getName();
 				Object originalValue = pv.getValue();
+				// 如果value是字符串会直接set了，如果是引用，会递归调用getBean
 				Object resolvedValue = valueResolver.resolveValueIfNecessary(pv, originalValue);
 				Object convertedValue = resolvedValue;
 				boolean convertible = bw.isWritableProperty(propertyName) &&

@@ -10,6 +10,8 @@ import java.util.List;
  */
 public class School implements InitializingBean {
 
+	private String s;
+
 	private String name;
 
 	private SchoolMaster schoolMaster;
@@ -55,10 +57,15 @@ public class School implements InitializingBean {
 	@Override
 	public String toString() {
 		return "School{" +
-				"name='" + name + '\'' +
+				"s='" + s + '\'' +
+				", name='" + name + '\'' +
 				", schoolMaster=" + schoolMaster +
 				", address=" + address +
 				", studentList=" + studentList +
 				'}';
+	}
+
+	public void setS(String s) {
+		this.s = s;
 	}
 }

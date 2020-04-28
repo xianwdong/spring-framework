@@ -60,8 +60,6 @@ public class BeanTest {
 //		 https://stackoverflow.com/questions/33840912/autowire-annotation-giving-null-value-in-spring
 //		 https://blog.csdn.net/chenlong220192/article/details/46723561
 		BeanFactory beanFactory = new XmlBeanFactory(new ClassPathResource("com.test/beans-school.xml"));
-		Object bean = beanFactory.getBean("org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor#0");
-		System.out.println(bean);
 		School school1 = (School) beanFactory.getBean("school");
 		System.out.println(school1);
 
@@ -86,6 +84,13 @@ public class BeanTest {
 		ApplicationContext context = new ClassPathXmlApplicationContext("com.test/beans-lookup.xml");
 		GetBeanTest getBeanTest = (GetBeanTest) context.getBean("getBeanTest");
 		getBeanTest.showMe();
+	}
+
+	@Test
+	public void test_testBean() {
+		ApplicationContext context = new ClassPathXmlApplicationContext("com.test/beans-school.xml");
+		TestBean bean = context.getBean(TestBean.class);
+		System.out.println(bean);
 	}
 
 }
