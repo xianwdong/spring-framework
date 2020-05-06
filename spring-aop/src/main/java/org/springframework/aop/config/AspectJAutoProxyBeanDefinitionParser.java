@@ -41,6 +41,11 @@ class AspectJAutoProxyBeanDefinitionParser implements BeanDefinitionParser {
 	@Override
 	@Nullable
 	public BeanDefinition parse(Element element, ParserContext parserContext) {
+		// registerAspectJAnnotationAutoProxyCreatorIfNecessary方法做了两件事
+		// 1.注册Bean AnnotationAwareAspectJAutoProxyCreator，这个类实现了BeanPostProcessor接口，用户对bean增强
+		// 2.解析proxy-target-class和expose-proxy属性
+		// proxy-target-class决定使用jdk代理还是cglib代理
+		// expose-proxy解决对象内部自我调用时的切面增强
 		AopNamespaceUtils.registerAspectJAnnotationAutoProxyCreatorIfNecessary(parserContext, element);
 		extendBeanDefinition(element, parserContext);
 		return null;
