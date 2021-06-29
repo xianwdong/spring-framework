@@ -1,5 +1,6 @@
 package com.test;
 
+import com.test.annotationcontext.TestClass;
 import com.test.annotationcontext.TestController;
 import com.test.annotationcontext.TestService;
 import org.junit.Assert;
@@ -19,6 +20,7 @@ public class AnnotationBeanTest {
 		context.refresh();
 		Assert.assertNotNull(context.getBean(TestController.class));
 		Assert.assertNotNull(context.getBean(TestService.class));
+		Assert.assertNotNull(context.getBean(TestClass.class));
 	}
 
 }

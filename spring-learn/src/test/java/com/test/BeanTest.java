@@ -11,6 +11,7 @@ import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.context.support.FileSystemXmlApplicationContext;
 import org.springframework.core.io.ClassPathResource;
 
 public class BeanTest {
@@ -89,6 +90,15 @@ public class BeanTest {
 	@Test
 	public void test_testBean() {
 		ApplicationContext context = new ClassPathXmlApplicationContext("com.test/beans-school.xml");
+		TestBean bean = context.getBean(TestBean.class);
+		System.out.println(bean);
+	}
+
+	@Test
+	public void test_fileSystem() {
+		FileSystemXmlApplicationContext context = new FileSystemXmlApplicationContext("G:\\code\\personal\\spring-framework\\spring-learn\\src\\test\\resources\\com.test\\beans.xml");
+
+		// FileSystemXmlApplicationContext context = new FileSystemXmlApplicationContext("beans.xml");
 		TestBean bean = context.getBean(TestBean.class);
 		System.out.println(bean);
 	}
