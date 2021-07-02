@@ -3,13 +3,13 @@ package com.test;
 import com.test.element.lookup.GetBeanTest;
 import com.test.event.TestEvent;
 import com.test.inject.School;
+import com.test.xsd.UserXsd;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.BeanCurrentlyInCreationException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 import org.springframework.core.io.ClassPathResource;
@@ -101,6 +101,18 @@ public class BeanTest {
 		// FileSystemXmlApplicationContext context = new FileSystemXmlApplicationContext("beans.xml");
 		TestBean bean = context.getBean(TestBean.class);
 		System.out.println(bean);
+	}
+
+	@Test
+	public void test_xsd() {
+		// 参考 https://github.com/huifer/spring-analysis/blob/main/book/ioc/docs/ch-04/%E7%AC%AC%E5%9B%9B%E7%AB%A0-%E8%87%AA%E5%AE%9A%E4%B9%89%E6%A0%87%E7%AD%BE%E8%A7%A3%E6%9E%90.md
+		// 注意 spring.handlers文件和spring.schemaas文件必须放在META-INF文件夹下
+		ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("com.test/user.xml");
+		UserXsd testUserBean = context.getBean("testUserBean", UserXsd.class);
+		System.out.println(testUserBean);
+		assert testUserBean.getName().equals("huifer");
+		assert testUserBean.getIdCard().equals("123");
+		context.close();
 	}
 
 }

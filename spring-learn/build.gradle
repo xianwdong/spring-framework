@@ -5,9 +5,14 @@ plugins {
 group 'org.springframework'
 version '5.1.15.BUILD-SNAPSHOT'
 
-repositories {
-    mavenCentral()
-}
+
+    repositories {
+        maven { url 'https://maven.aliyun.com/repository/public/' }
+        maven { url 'https://maven.aliyun.com/repository/spring/'}
+        mavenLocal()
+        mavenCentral()
+    }
+
 
 dependencies {
     compile(project(":spring-beans"))
