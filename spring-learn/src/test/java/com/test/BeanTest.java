@@ -3,6 +3,7 @@ package com.test;
 import com.test.element.lookup.GetBeanTest;
 import com.test.event.TestEvent;
 import com.test.inject.School;
+import com.test.lifecycle.LiveBean;
 import com.test.xsd.UserXsd;
 import org.junit.Assert;
 import org.junit.Test;
@@ -112,6 +113,13 @@ public class BeanTest {
 		System.out.println(testUserBean);
 		assert testUserBean.getName().equals("huifer");
 		assert testUserBean.getIdCard().equals("123");
+		context.close();
+	}
+
+	@Test
+	public void test_lifeCycle() {
+		ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("com.test/live-bean.xml");
+		LiveBean liveBean = context.getBean("liveBean", LiveBean.class);
 		context.close();
 	}
 
